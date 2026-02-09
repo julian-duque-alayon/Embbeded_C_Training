@@ -1,59 +1,43 @@
-# 🏗️ STM32F413ZH Project Template
+# 📡 STM32 Projects
 
-This is a professional base template configured with **CMake** and **Low-Layer (LL) Drivers** specifically for the **NUCLEO-F413ZH** (Cortex-M4) development board.
-
----
-
-## 🚀 Workflow (WSL + Hardware)
-
-Since the hardware is physically connected to Windows but we compile in WSL, follow these steps:
-
-### 1. Windows Preparation (PowerShell)
-You must "pass" the USB port from Windows to WSL using `usbipd`.
-
-1.  **List Devices**: Find the BUSID of your STM32 (look for ST-LINK).
-    ```powershell
-    usbipd list
-    ```
-2.  **Attach to WSL**: (Replace `2-8` with your actual BUSID).
-    ```powershell
-    usbipd attach --wsl --busid 2-8 --auto-attach
-    ```
-
-### 2. WSL Verification
-Confirm that WSL can see the device.
-
-1.  **List USBs**: You should see an entry for "STMicroelectronics ST-LINK".
-    ```bash
-    lsusb
-    ```
-
-### 3. Build & Compilation (WSL Terminal)
-Inside this directory (`STM32/Template_NucleoF413ZH`):
-
-1.  **Configure Project**:
-    ```bash
-    cmake -B build -G Ninja -DCMAKE_TOOLCHAIN_FILE=cmake/stm32_gcc.cmake
-    ```
-2.  **Compile**:
-    ```bash
-    cmake --build build
-    ```
-
-### 4. Flash the Microcontroller
-Upload the code from WSL using **OpenOCD**.
-
-1.  **Flash Command**:
-    ```bash
-    openocd -f interface/stlink.cfg -f target/stm32f4x.cfg -c "program build/Nucleo_F413_Template.elf verify reset exit"
-    ```
+Repository section dedicated to development with **STM32** microcontrollers. This directory contains templates and projects for various STM32 boards.
 
 ---
 
-## 📂 Technical Details
-- **MCU**: STM32F413ZHT6
-- **Drivers**: STM32 Low-Layer (LL) for maximum efficiency.
-- **Linker Script**: `STM32F413XX_FLASH.ld` configured for 1.5MB Flash and 320KB SRAM.
+## �️ General Hardware Workflow (WSL Support)
+
+All STM32 boards in this repository use **ST-LINK** for debugging and flashing. Since hardware is connected via USB to Windows but we use WSL for development, follow these universal steps:
+
+### 1. Windows Side (PowerShell)
+Expose the USB debugger to WSL:
+1. **Identify the BUSID**:
+   ```powershell
+   usbipd list
+   ```
+2. **Attach to WSL**: (Automates reconnection if device resets)
+   ```powershell
+   usbipd attach --wsl --busid <YOUR_BUSID> --auto-attach
+   ```
+
+### 2. WSL Side (Linux Terminal)
+Verify the connection:
+```bash
+lsusb
+# Look for "STMicroelectronics ST-LINK"
+```
 
 ---
-*Part of [Embedded C Training](https://github.com/julian-duque-alayon/Embbeded_C_Training)*
+
+## 📂 Sub-Projects & Templates
+
+- **[Template_NucleoF413ZH](./Template_NucleoF413ZH)**: Clean project base for the Nucleo-144 board (Cortex-M4).
+- *(Add more boards/projects here in the future)*
+
+---
+
+## 💡 Troubleshooting
+- **Connection Lost**: If flashing fails, check `lsusb` again. You might need to re-run the `usbipd attach` command in PowerShell.
+- **Permission Denied**: If OpenOCD cannot open the device, ensure your user has permissions for the plugdev group or use `sudo`.
+
+---
+*Back to [Main Repository](../README.md)*
