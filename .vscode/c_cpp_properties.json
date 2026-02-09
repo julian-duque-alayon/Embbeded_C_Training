@@ -1,0 +1,19 @@
+{
+    "configurations": [
+        {
+            "name": "STM32-ARM",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "/usr/lib/gcc/arm-none-eabi/**"
+            ],
+            "defines": [
+                "STM32F413xx",
+                "USE_FULL_LL_DRIVER"
+            ],
+            "compilerPath": "/usr/bin/arm-none-eabi-gcc",
+            "cStandard": "c11",
+            "intelliSenseMode": "linux-gcc-arm"
+        }
+    ],
+    "version": 4
+}

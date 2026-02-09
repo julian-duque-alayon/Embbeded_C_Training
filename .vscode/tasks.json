@@ -1,0 +1,20 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Flash Nucleo",
+            "type": "shell",
+            "command": "openocd",
+            "args": [
+                "-f",
+                "interface/stlink.cfg",
+                "-f",
+                "target/stm32f4x.cfg",
+                "-c",
+                "program build/Nucleo_F413_Template.elf verify reset exit"
+            ],
+            "group": "build",
+            "problemMatcher": []
+        }
+    ]
+}
