@@ -1,46 +1,16 @@
 # 🛰️ Embedded C Training
 
-Welcome to my **Embedded C Training** laboratory! This repository is dedicated to my journey in mastering embedded systems, low-level programming, and real-time development.
+Laboratorio de entrenamiento para sistemas embebidos (STM32 y ESP32).
 
-![C](https://img.shields.io/badge/Language-C-00599C?style=for-the-badge&logo=c&logoColor=white)
-![STM32](https://img.shields.io/badge/Platform-STM32-03234B?style=for-the-badge&logo=stmicroelectronics&logoColor=white)
-![ESP32](https://img.shields.io/badge/Platform-ESP32-E7352C?style=for-the-badge&logo=espressif&logoColor=white)
-![Build](https://img.shields.io/badge/Build-CMake-064F8C?style=for-the-badge&logo=cmake&logoColor=white)
+## 📂 Estructura del Repositorio
 
----
+### [STM32](./STM32)
+Contiene proyectos para la familia STM32, enfocados en la placa **NUCLEO-F413ZH**.
+- **[Template_STM32](./STM32/Template_STM32)**: Proyecto base con CMake y LL Drivers.
 
-## 🎯 Objectives
-- [x] Setting up a professional development environment with **CMake** and **Arm GNU Toolchain**.
-- [ ] Implement Low-Level (LL) drivers for STM32 peripherals.
-- [ ] Master Bare-Metal programming.
-- [ ] Explore RTOS (FreeRTOS) and concurrent task management.
-- [ ] IoT integration with ESP32.
-
-## 🛠️ Hardware Stack
-| Device | Processor | Description |
-| :--- | :--- | :--- |
-| **NUCLEO-F413ZH** | Cortex-M4 | High-performance STM32 Nucleo-144 board. |
-| **ESP32** | Xtensa Dual-Core | Wi-Fi & Bluetooth MCU for IoT projects. |
-
-## 📂 Repository Structure
-- `Template/`: A clean, scalable base project for the **NUCLEO-F413ZH**, configured with CMake and LL Drivers.
-- *(Coming Soon)* `Lessons/`: Step-by-step guides and specific peripheral exercises.
-- *(Coming Soon)* `Projects/`: Full-scale embedded applications.
-
-## 🚀 Getting Started
-
-### Prerequisites
-1. **Toolchain**: [gcc-arm-none-eabi](https://developer.arm.com/Tools%20and%20Software/GNU%20Toolchain)
-2. **Build System**: [CMake](https://cmake.org/download/) & Ninja/Make.
-3. **Debugger**: OpenOCD or ST-Link Utility.
-
-### Building the Template
-```bash
-cd Template
-mkdir build && cd build
-cmake .. -G Ninja
-ninja
-```
+### [ESP32](./ESP32)
+Contiene proyectos para **ESP32** (Sistemas Wi-Fi/Bluetooth).
+- **[Template](./ESP32/Template)**: Estructura base para proyectos ESP-IDF / Arduino.
 
 ---
-Developed with ❤️ by [Julian Duque](https://github.com/julian-duque-alayon)
+*Desarrollado por [Julian Duque](https://github.com/julian-duque-alayon)*
