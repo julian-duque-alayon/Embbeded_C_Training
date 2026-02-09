@@ -1,59 +1,41 @@
-# 🏗️ STM32F413ZH Project Template
+# 🏗️ Nucleo-F413ZH Project Template
 
-This is a professional base template configured with **CMake** and **Low-Layer (LL) Drivers** specifically for the **NUCLEO-F413ZH** (Cortex-M4) development board.
+This template provides a professional, lightweight starting point for developing on the **STM32F413ZH** microcontroller using **Low-Layer (LL) Drivers** and **CMake**.
 
----
+## 🚀 Quick Start (WSL/Linux Terminal)
 
-## 🚀 Workflow (WSL + Hardware)
+### 1. Build the Project
+Run the following commands within this directory:
 
-Since the hardware is physically connected to Windows but we compile in WSL, follow these steps:
+```bash
+# Configure the build system
+cmake -B build -G Ninja -DCMAKE_TOOLCHAIN_FILE=cmake/stm32_gcc.cmake
 
-### 1. Windows Preparation (PowerShell)
-You must "pass" the USB port from Windows to WSL using `usbipd`.
+# Compile and generate binaries
+cmake --build build
+```
 
-1.  **List Devices**: Find the BUSID of your STM32 (look for ST-LINK).
-    ```powershell
-    usbipd list
-    ```
-2.  **Attach to WSL**: (Replace `2-8` with your actual BUSID).
-    ```powershell
-    usbipd attach --wsl --busid 2-8 --auto-attach
-    ```
+### 2. Flash the Microcontroller
+Ensure the hardware is attached to WSL via `usbipd` (see [STM32/README.md](../README.md)), then run:
 
-### 2. WSL Verification
-Confirm that WSL can see the device.
+```bash
+openocd -f interface/stlink.cfg -f target/stm32f4x.cfg -c "program build/Nucleo_F413_Template.elf verify reset exit"
+```
 
-1.  **List USBs**: You should see an entry for "STMicroelectronics ST-LINK".
-    ```bash
-    lsusb
-    ```
+## 📂 Project Highlights
 
-### 3. Build & Compilation (WSL Terminal)
-Inside this directory (`STM32/Template_NucleoF413ZH`):
+- **Drivers**: Utilizes exclusively **STM32 Low-Layer (LL)** drivers for minimal overhead and direct hardware control.
+- **Boot**: Includes official CMSIS startup code and vector table in the `Startup/` folder.
+- **Linker**: Pre-configured `STM32F413XX_FLASH.ld` for 1.5MB Flash and 320KB RAM.
+- **Automation**: The build process automatically generates a `.hex` file and prints the output memory size.
 
-1.  **Configure Project**:
-    ```bash
-    cmake -B build -G Ninja -DCMAKE_TOOLCHAIN_FILE=cmake/stm32_gcc.cmake
-    ```
-2.  **Compile**:
-    ```bash
-    cmake --build build
-    ```
+## 🔧 Project Structure
 
-### 4. Flash the Microcontroller
-Upload the code from WSL using **OpenOCD**.
-
-1.  **Flash Command**:
-    ```bash
-    openocd -f interface/stlink.cfg -f target/stm32f4x.cfg -c "program build/Nucleo_F413_Template.elf verify reset exit"
-    ```
+- `App/`: Contains your application logic (`main.c`, interrupts).
+- `Drivers/`: Peripheral drivers (CMSIS & STM32 LL).
+- `Startup/`: Device-specific assembly startup code.
+- `cmake/`: Toolchain configuration for cross-compiling.
+- `CMakeLists.txt`: Main build logic.
 
 ---
-
-## 📂 Technical Details
-- **MCU**: STM32F413ZHT6
-- **Drivers**: STM32 Low-Layer (LL) for maximum efficiency.
-- **Linker Script**: `STM32F413XX_FLASH.ld` configured for 1.5MB Flash and 320KB SRAM.
-
----
-*Part of [Embedded C Training](https://github.com/julian-duque-alayon/Embbeded_C_Training)*
+*Back to [STM32 Modules](../README.md)*
