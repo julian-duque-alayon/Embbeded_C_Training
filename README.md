@@ -6,7 +6,7 @@ Laboratorio de entrenamiento para sistemas embebidos (STM32 y ESP32).
 
 ### [STM32](./STM32)
 Contiene proyectos para la familia STM32, enfocados en la placa **NUCLEO-F413ZH**.
-- **[Template_STM32](./STM32/Template_STM32)**: Proyecto base con CMake y LL Drivers.
+- **[Template_NucleoF413ZH](./STM32/Template_NucleoF413ZH)**: Proyecto base con CMake y LL Drivers.
 
 ### [ESP32](./ESP32)
 Contiene proyectos para **ESP32** (Sistemas Wi-Fi/Bluetooth).

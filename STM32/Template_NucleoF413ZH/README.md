@@ -29,7 +29,7 @@ Una vez vinculado, confirma que WSL ve el dispositivo.
     ```
 
 ### 3. Construcción y Compilación (WSL)
-Dentro de este directorio (`STM32/Template_STM32`):
+Dentro de este directorio (`STM32/Template_NucleoF413ZH`):
 
 1.  **Configurar el proyecto**:
     ```bash
