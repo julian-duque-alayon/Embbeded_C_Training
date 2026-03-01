@@ -1,6 +1,6 @@
 # 🚀 Week 1: Data Anatomy and Memory Map
 
-Of course! We don't just have a plan; the goal of this first week is to transform the theory you're reading in the manual into knowledge **"hard-coded in your fingers"**. As the bibliography states, you cannot call yourself a professional if you don't apply clean code discipline and constant practice from the start.
+Let's get to work. This first week is designed to turn the theory you've been reading into **muscle memory**. Professional firmware development isn't just about understanding concepts—it's about applying clean code principles and getting comfortable with the hardware from day one.
 
 > [!IMPORTANT]
 > **LeBlanc's Law:** *"Later equals never"*.  
