@@ -1,57 +1,56 @@
-# 🚀 Semana 1: Anatomía del Dato y Mapa de Memoria
+# 🚀 Week 1: Data Anatomy and Memory Map
 
-¡Claro que sí! No solo tenemos un plan, sino que el objetivo de esta primera semana es transformar la teoría que estás leyendo en el manual en conocimiento **"machacado en tus dedos"**. Como indica la bibliografía, no puedes llamarte profesional si no aplicas la disciplina del código limpio y la práctica constante desde el inicio.
+Of course! We don't just have a plan; the goal of this first week is to transform the theory you're reading in the manual into knowledge **"hard-coded in your fingers"**. As the bibliography states, you cannot call yourself a professional if you don't apply clean code discipline and constant practice from the start.
 
 > [!IMPORTANT]
-> **Ley de LeBlanc:** *"Más tarde es igual a nunca"*.  
-> No dejes para mañana lo que puedes programar hoy.
+> **LeBlanc's Law:** *"Later equals never"*.  
+> Don't leave for tomorrow what you can program today.
 
 ---
 
-## 🏆 El Gran Objetivo de la Semana: "The LED Carry Calculator"
-Para el domingo, debes haber programado un sistema que:
-1. **Operación Crítica:** Realice una operación aritmética (como una suma) que cause un desbordamiento de bits (**Integer Overflow**).
-2. **Visualización:** Configure los registros físicos del **STM32F413ZH** para mostrar el resultado en binario usando los LEDs de la placa (**PB0, PB7, PB14**).
-3. **Bajo Nivel:** Maneje el hardware mediante **punteros directos a memoria** y el calificador `volatile`, sin usar ninguna librería externa de ST.
+## 🏆 The Big Weekly Goal: "The LED Carry Calculator"
+By Sunday, you must have programmed a system that:
+1. **Critical Operation:** Performs an arithmetic operation (such as an addition) that causes a bit overflow (**Integer Overflow**).
+2. **Visualization:** Configures the physical registers of the **STM32F413ZH** to display the result in binary using the onboard LEDs (**PB0, PB7, PB14**).
+3. **Low-Level:** Handles the hardware using **direct memory pointers** and the `volatile` qualifier, without using any external ST libraries.
 
 ---
 
-## 📅 Plan de Programación Diario (Nivel Atómico)
+## 📅 Daily Programming Plan (Atomic Level)
 
-| Día | Objetivo de Programación (Hacer) | Resultado Esperado |
+| Day | Programming Objective (Task) | Expected Result |
 | :--- | :--- | :--- |
-| **Lunes** | Crear la función `printStandardTypeSizes` usando exclusivamente `<stdint.h>`. | Ver en consola el tamaño exacto de `uint8_t`, `uint32_t` y `float`. |
-| **Martes** | Imprimir las direcciones de memoria de una variable global y una local usando `%p`. | Confirmar que la global empieza en `0x20...` (SRAM) y la local en el Stack. |
-| **Miércoles** | Implementar macros de operaciones bitwise (`SET_BIT`, `CLEAR_BIT`) y probarlas. | Dominar la manipulación quirúrgica de bits antes de tocar el hardware. |
-| **Jueves** | Escribir código que lea el registro `RCC_AHB1ENR` (dirección `0x40023830`). | Validar acceso a direcciones físicas usando casting de punteros. |
-| **Viernes** | **Taller Físico:** Configurar pines de LEDs como salida y realizar suma con overflow. | Ver el resultado de tu lógica de C reflejado en los voltajes de la placa. |
+| **Monday** | Create the `printStandardTypeSizes` function using exclusively `<stdint.h>`. | See the exact size of `uint8_t`, `uint32_t`, and `float` in the console. |
+| **Tuesday** | Print memory addresses of a global and a local variable using `%p`. | Confirm that the global variable starts at `0x20...` (SRAM) and the local one on the Stack. |
+| **Wednesday** | Implement bitwise operation macros (`SET_BIT`, `CLEAR_BIT`) and test them. | Master surgical bit manipulation before touching the hardware. |
+| **Thursday** | Write code that reads the `RCC_AHB1ENR` register (address `0x40023830`). | Validate access to physical addresses using pointer casting. |
+| **Friday** | **Physical Workshop:** Configure LED pins as output and perform the addition with overflow. | See the result of your C logic physically reflected in the board's voltages. |
 
 ---
 
-## 🧐 ¿Por qué debes programar hoy mismo?
-La pereza es el primer obstáculo para un arquitecto. El libro *Clean Code* explica que aprender a escribir código limpio requiere sudar sobre él y practicar tú mismo. Leer el manual es necesario, pero si no programas, solo estarás acumulando **"conocimiento de avión"** que olvidarás al aterrizar.
+## 🧐 Why should you program today?
+Procrastination is the first obstacle for an architect. The book *Clean Code* explains that learning to write clean code requires sweating over it and practicing it yourself. Reading the manual is necessary, but if you don't program, you will only be accumulating **"airplane knowledge"** that you'll forget upon landing.
 
-### 🏁 Tu meta técnica para hoy:
-**No termines el día sin que tu Makefile/CMake compile un `main.c` que use `sizeof()` para validar que estás en una arquitectura de 32 bits.** Esa pequeña victoria dopaminérgica es la que eliminará la pereza para mañana.
+### 🏁 Your technical goal for today:
+**Don't finish the day without your Makefile/CMake compiling a `main.c` that uses `sizeof()` to validate that you are on a 32-bit architecture.** That small dopaminergic victory is what will eliminate procrastination for tomorrow.
 
 ---
 
-## 🛠️ Guía Rápida de Uso
+## 🛠️ Quick Start Guide
 
-### 1. Construir el Proyecto
+### 1. Build the Project
 ```bash
-# Configurar el sistema de construcción
+# Configure the build system
 cmake -B build -G Ninja -DCMAKE_TOOLCHAIN_FILE=cmake/stm32_gcc.cmake
 
-# Compilar
+# Compile
 cmake --build build
 ```
 
-### 2. Flashear la Placa
+### 2. Flash the Board
 ```bash
 openocd -f interface/stlink.cfg -f target/stm32f4x.cfg -c "program build/Nucleo_F413_Template.elf verify reset exit"
 ```
 
 ---
-*Volver a [Módulos STM32](../README.md)*
-
+*Back to [STM32 Modules](../README.md)*
