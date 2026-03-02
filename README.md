@@ -16,28 +16,53 @@ Projects for **ESP32** (Wi-Fi/Bluetooth IoT systems).
 
 ---
 
-## 🛠️ VS Code Workflow (Multi-Project Setup)
+## 🛠️ Development Workflow (Multi-Project)
 
-Since this repository contains multiple independent CMake projects, follow these steps to ensure the IDE (VS Code with CMake Tools) works correctly:
+Since this repository contains multiple independent projects (STM32 weeks, templates, etc.), you must explicitly tell VS Code which one you are currently working on.
 
-### 1. Select the Active Project
-If you have the whole repository open, you must tell VS Code which sub-folder is the active project:
-- Press `Ctrl + Shift + P`
-- Search for: **`CMake: Select Active Folder`**
-- Choose the specific template you want to work on (e.g., `Template_NucleoF413ZH`).
+### 1. Selecting your Active Project (The IDE Way)
+If you have the entire repository open, you need to set the "Context" for the CMake tools:
+1.  **Select Active Folder**: Press `Ctrl + Shift + P` and search for **`CMake: Select Active Folder`**. Choose the directory you want to build (e.g., `STM32/Week_1`).
+2.  **Select a Kit**: Press `Ctrl + Shift + P` -> **`CMake: Select a Kit`**.
+    *   **For STM32**: Choose `arm-none-eabi`.
+    *   **For ESP32**: Choose the ESP-IDF toolchain.
+3.  **Configure**: The IDE will automatically look for the `CMakeLists.txt` inside that folder.
 
-### 2. Configure the Kit (Toolchain)
-You need to tell the IDE which compiler to use:
-- Press `Ctrl + Shift + P`
-- Command: **`CMake: Select a Kit`**
-- **For STM32**: Select `arm-none-eabi`.
-- **For ESP32**: Select the corresponding ESP-IDF toolchain.
+### 2. Using the VS Code Buttons (The "Play" Button)
+The status bar at the bottom provides quick actions configured via the `.vscode/` files:
+*   **⚙️ Build**: Compiles your code.
+*   **▶️ Run/Debug**: The "Play" button (or `F5`) is configured in `.vscode/launch.json`. It will use **Cortex-Debug** and **OpenOCD** to flash the code and start a debugging session.
+*   **⚡ Flash (Task)**: To just flash without debugging, press `Ctrl + Shift + B` and select **"Flash Nucleo"**. This uses the task defined in `.vscode/tasks.json`.
 
-### 3. Build & Compile
-- **Select Build Target**: `Ctrl + Shift + P` -> **`CMake: Select Variant`** (usually `Debug` or `Release`).
-- **Build**: Press `F7` or click the **Build** button in the status bar.
-- **Clean Configuration (Cache)**: If you experience weird errors after changing paths or files, run:
-  - `Ctrl + Shift + P` -> **`CMake: Delete Cache and Reconfigure`**.
+---
+
+### 3. The "Pro" Way (Manual Terminal Commands)
+If you prefer the terminal or are troubleshooting, use these commands from the root of your sub-project (e.g., inside `STM32/Week_1/`):
+
+#### **A. Build & Compile**
+```bash
+# 1. Create the build directory and configure
+cmake -B build -G Ninja -DCMAKE_TOOLCHAIN_FILE=cmake/stm32_gcc.cmake
+
+# 2. Compile the project
+cmake --build build
+```
+
+#### **B. Flash the Board**
+```bash
+# Uses OpenOCD to send the .elf to the chip
+openocd -f interface/stlink.cfg -f target/stm32f4x.cfg -c "program build/Nucleo_F413_Template.elf verify reset exit"
+```
+
+#### **C. Manual Debugging**
+If not using the IDE button, you can start an OpenOCD server in one terminal:
+```bash
+openocd -f interface/stlink.cfg -f target/stm32f4x.cfg
+```
+Then, in another terminal, connect using `gdb-multiarch`:
+```bash
+arm-none-eabi-gdb build/Nucleo_F413_Template.elf -ex "target remote localhost:3333"
+```
 
 ---
 *Developed by [Julian Duque](https://github.com/julian-duque-alayon)*
