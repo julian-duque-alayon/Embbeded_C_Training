@@ -90,7 +90,14 @@ printf("uint8_t : %d byte(s) - %s\n",
 ```c
 #include <stdint.h>   /* uint8_t, uint16_t, uint32_t                       */
 #include <stdio.h>    /* printf()                                           */
-#include <assert.h>   /* static_assert()                                   */
+#include <assert.h>   /* static_assert() — compile-time checks             */
+
+/* ── Global Variables ──────────────────────────────────────────────────── */
+/* 
+ * uwTick is required by stm32f4xx_it.c for the SysTick_Handler. 
+ * Since we are in a bare-metal state, we define it here.
+ */
+volatile uint32_t uwTick = 0;
 
 /* ── Compile-Time Validation ──────────────────────────────────────────── */
 static_assert(sizeof(uint8_t)  == 1, "uint8_t must be 1 byte");
@@ -132,6 +139,11 @@ int main(void)
     return 0;
 }
 ```
+
+> **Note on `uwTick`:** Even in a "bare-metal" setup, the vendor-provided 
+> interrupt handler file (`stm32f4xx_it.c`) often expects a global tick 
+> variable. We define it here to satisfy the linker, even though we aren't 
+> using HAL libraries yet.
 
 ---
 
