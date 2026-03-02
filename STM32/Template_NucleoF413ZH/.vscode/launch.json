@@ -7,7 +7,7 @@
             "request": "launch",
             "servertype": "openocd",
             "executable": "${command:cmake.launchTargetPath}",
-            "cwd": "${workspaceRoot}",
+            "cwd": "${workspaceFolder}",
             "device": "STM32F413ZH",
             "configFiles": [
                 "interface/stlink.cfg",
