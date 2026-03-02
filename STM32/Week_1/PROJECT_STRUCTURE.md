@@ -1,55 +1,112 @@
-# 📁 Project Structure: Week 1
+# 📁 Project Structure: Week 1 Detailed Blueprint
 
-This document provides a detailed breakdown of the file structure for the **Week 1** project. Understanding these files is essential for mastering how Code is translated into Silicon behavior.
+This document explains every single file and directory in the **Week 1** project. It serves as a reference to understand how the build system, hardware drivers, and your application logic work together.
 
 ---
 
 ## 📂 Root Directory
+The top-level folder contains the general project instructions and universal configuration files.
 
-| File/Folder | Purpose | Description |
+| File/Folder | Purpose | Why it exists |
 | :--- | :--- | :--- |
-| `App/` | **Application Source** | Contains the logic you write. This is where your surgical bit manipulation happens. |
-| `Drivers/` | **Hardware Extraction** | Standard header/source files from ST (CMSIS and Low-Layer). These define register addresses and base functions. |
-| `Startup/` | **The First Breath** | Contains the Assembly code that the processor runs immediately after reset (Vector Table setup). |
-| `CMakeLists.txt` | **Build Architect** | The master script for CMake. It tells the compiler which files to include, what flags to use, and how to link the final `.elf` file. |
-| `STM32F413XX_FLASH.ld` | **Memory Map / Linker Script** | Crucial file. It defines the exact physical address where code (Flash) and data (SRAM) reside. |
-| `Template.ioc` | **Configuration File** | The STM32CubeMX project file. Used to graphically configure pins, clocks, and peripherals. |
-| `build/` | **The Workshop** | Temporary folder where the compiler puts object files and the final executable. **Do not edit files here.** |
+| **`App/`** | Application Source | Where you write your human-readable C logic. |
+| **`Drivers/`** | Hardware Abstraction | Files that translate raw hardware into C code (CMSIS, HAL, LL). |
+| **`Startup/`** | The "First Breath" | Code that runs immediately when the chip is powered on. |
+| **`build/`** | The "Workshop" | Where the compiler stores its work (created automatically). |
+| **`cmake/`** | Built-in Scripts | Predefined procedures for the build system. |
+| **`docs/`** | Documentation | Visual assets and extra info. |
+| **`CMakeLists.txt`** | Build Architect | The main instruction set for the compiler. |
+| **`STM32F413XX_FLASH.ld`** | Linker Script | Definitively maps software to hardware memory addresses. |
+| **`Template.ioc`** | CubeMX Config | Graphical setup for the microcontroller. |
+| **`README.md`** | Main Documentation | Your guide and plan for Week 1. |
+| **`PROJECT_STRUCTURE.md`** | Detailed Map | (This file). |
 
 ---
 
-## 📂 App/ (Your Application)
+## 📂 App/ (Your Code)
+This is the most important directory for you.
 
-This is your primary workspace.
+### 📍 `App/inc/` (Headers - "The Contracts")
+Wait, why `.h` files? They act as contracts that tell different pieces of code what exists and how to use it.
 
-### 📍 `App/inc/` (Headers)
-*   **`main.h`**: The global configuration header. Used to include all LL drivers needed by `main.c` and define global constants.
-*   **`stm32f4xx_it.h`**: Header for interrupt handlers. Defines the prototypes for functions called when an event (like a timer or button) interrupts the CPU.
-*   **`stm32f4xx_hal_conf.h`**: Even though we use LL, this file is required by the vendor to toggle which peripherals are active in the project.
+*   **`main.h`**:
+    *   **Purpose**: Central configuration for the app.
+    *   **What it does**: Includes all the driver files normally required and defines global constants.
+    *   **Why it exists**: To provide a single source of truth for peripheral configuration in the app.
+*   **`stm32f4xx_hal_conf.h`**:
+    *   **Purpose**: Hardware configuration.
+    *   **What it does**: Enables or disables specific peripheral drivers (ADC, I2C, UART) to save memory.
+    *   **Returns**: Nothing (it provides definitions).
+*   **`stm32f4xx_it.h`**:
+    *   **Purpose**: Interrupt handler signatures.
+    *   **What it does**: Lists all functions that respond to hardware events (like a button press).
 
-### 📍 `App/src/` (Source Logic)
-*   **`main.c`**: The entry point. It contains `SystemClock_Config()` (initializing the heart of the chip) and your main control loop.
-*   **`stm32f4xx_it.c`**: The "Traffic Controller". This file contains the C-code for interrupt handlers (like `SysTick_Handler`), which we use for precise timing.
-*   **`syscalls.c`**: The "Bridge". Provides minimal implementations for standard C functions (like `printf` or `malloc`) so the compiler knows how to handle them in a bare-metal environment.
-*   **`system_stm32f4xx.c`**: Vendor code that performs the very first low-level clock setup before `main()` is even reached.
+### 📍 `App/src/` (Source - "The Logic")
+This is where the actual work happens.
+
+*   **`main.c`**:
+    *   **Purpose**: The main engine of the program.
+    *   **What it does**: Initializes the system and contains the `while(1)` loop that controls your LEDs.
+    *   **Why it exists**: Every C program needs an entry point called `main`.
+*   **`stm32f4xx_it.c`**:
+    *   **Purpose**: Hardware event processor.
+    *   **What it does**: Contains the functions that run when the processor is "interrupted" (like the SysTick timer).
+    *   **Returns**: Usually `void` (interrupts handle events, they don't return values).
+*   **`syscalls.c`**:
+    *   **Purpose**: The "Under-the-hood" translator.
+    *   **What it does**: Provides minimal logic for basic C actions like `_read` or `_write` (normally used by `printf`).
+    *   **Why it exists**: The C standard library assumes there is a "system" to talk to; we have to provide dummy logic for it.
+*   **`system_stm32f4xx.c`**:
+    *   **Purpose**: Low-level hardware prep.
+    *   **What it does**: Sets the very first clock cycles for the processor before it reaches your code.
 
 ---
 
-## 📂 Startup/
+## 📂 Startup/ ("The First Instructions")
+The processor cannot understand C immediately; it needs basic instructions first.
 
-*   **`startup_stm32f413xx.s`**: An Assembly (`.s`) file. It defines the **Vector Table** (the list of memory addresses for every possible interrupt) and calls the `_reset` handler that eventually jumps to your `main()`.
-
----
-
-## 📂 Drivers/
-
-*   **`CMSIS/`**: The "Standard". Definitions that are common across all ARM Cortex-M4 processors, regardless of the manufacturer.
-*   **`STM32F4xx_HAL_Driver/`**: The "Translator". We are using the **LL (Low-Layer)** part of this library, which provides thin wrappers over the raw hardware registers (e.g., `LL_GPIO_SetPinMode`).
+*   **`startup_stm32f413xx.s`**:
+    *   **Purpose**: The processor's "Reset Handler."
+    *   **What it does**: Sets up the stack pointer, clears memory, and jumps to `main()`.
+    *   **Why it exists**: It contains the **Vector Table**, the absolute "map" of where the CPU should look when an event happens.
 
 ---
 
-## 📂 .vscode/ (Environment)
+## 📂 .vscode/ ("The Development Environment")
+These hidden files tell your computer how to help you write code.
 
-*   **`tasks.json`**: Automates your workflow. Contains the "Flash device" command.
-*   **`launch.json`**: Debugging configuration. Tells VS Code how to use OpenOCD to connect to your physical board for step-by-step debugging.
-*   **`c_cpp_properties.json`**: Tells the VS Code "IntelliSense" where the header files are so you don't see red squiggles under your `#include` lines.
+*   **`c_cpp_properties.json`**: Tells VS Code where to find your header files so you don't get red squiggly lines.
+*   **`launch.json`**: Configures the debugger (F5), telling VS Code how to connect to your physical board and pause at `main()`.
+*   **`settings.json`**: Customizes VS Code for this specific project (e.g., setting the compiler path or formatting rules).
+*   **`tasks.json`**: Defines your custom shortcuts, like the "Flash device" command.
+
+---
+
+## 📂 build/ ("The Assembly Line")
+**This folder is generated by CMake.** You should never edit these files directly.
+
+*   **Why it exists**: To keep your source code clean. Instead of cluttering your files with intermediate object code, we shove it all here.
+*   **When does it appear?**: When you run the configuration step (`cmake -B build`).
+*   **Files inside**:
+    *   **`CMakeCache.txt`**: A "memory" of your settings from the last time you ran CMake.
+    *   **`build.ninja`**: The final set of instructions for the fast build tool (Ninja).
+    *   **`compile_commands.json`**: A file used by your editor to understand how each piece of code is compiled.
+    *   **`Nucleo_F413_Template.elf`**: Your compiled program! This is what gets flashed to the board.
+    *   **`Nucleo_F413_Template.map`**: A surgical map of exactly how much memory each function and variable takes up in SRAM and Flash.
+
+---
+
+## 📂 Drivers/ ("The Translators")
+These folders contain the thousands of files provided by the manufacturer (ST).
+
+*   **`CMSIS/`**: Standard code for all ARM processors (like yours). It defines how the CPU registers work.
+*   **`STM32F4xx_HAL_Driver/`**: ST's drivers that make it easy to control the chip. 
+    *   **HAL**: Heavy, high-level code.
+    *   **LL (Low-Layer)**: Fast, light code that talks directly to the registers (what we are using).
+
+---
+
+## 📂 cmake/ & Root Files
+*   **`cmake/stm32_gcc.cmake`**: A specific file that tells CMake "Hey, we aren't compiling for a normal computer; we are compiling for an ARM processor!" (This is called a **Toolchain File**).
+*   **`STM32F413XX_FLASH.ld`**: The **Linker Script**. It splits the chip's memory into segments (FLASH for your code, RAM for your variables). If you move a variable to a specific address, this file defines that address.
+*   **`Template.ioc`**: The "Save" file for STM32CubeMX. If you want to graphically reconfigure the pins, you open this file in CubeMX.
