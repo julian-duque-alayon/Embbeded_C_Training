@@ -11,7 +11,7 @@ This is the atomic planning for your **Week 1**. During this period, we will sto
 *   **What will be done:** You will master **data anatomy** and the **linear memory map** of the STM32F413ZH [RM0430, 2.2]. You will learn to configure "bare-metal" hardware without external libraries, using only raw pointers and bit-level operations.
 *   **What will be achieved:** By the end, you will have built a physical "Carry Calculator" that detects logical errors (overflow) and signals them via hardware, validating your logic with Unit Testing (TDD).
 *   **Master Plan Alignment:** This is the cornerstone of **Phase I (Software and Silicon Engineering)**. An architect cannot design robust systems without understanding how the compiler organizes data in SRAM.
-*   **Detailed Blueprint:** For a file-by-file breakdown of why everything exists, see [PROJECT_STRUCTURE.md](./PROJECT_STRUCTURE.md).
+*   **Detailed Blueprint:** For a file-by-file breakdown of why everything exists, see [PROJECT_STRUCTURE.md](../../PROJECT_STRUCTURE.md).
 
 ---
 

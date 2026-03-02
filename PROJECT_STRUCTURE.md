@@ -1,6 +1,8 @@
-# 📁 Project Structure: Week 1 Detailed Blueprint
+# 📁 Standard STM32 Project Structure
 
-This document explains every single file and directory in the **Week 1** project. It serves as a reference to understand how the build system, hardware drivers, and your application logic work together.
+> **Note**: This document provides a **general description** of the standard STM32 project directory and file population. Most STM32 projects in this repository are based on the `Template_NucleoF413ZH` project structure, and this guide serves as a universal reference for understanding their organization.
+
+This document explains the common files and directories found in an STM32 project. It serves as a reference to understand how the build system, hardware drivers, and your application logic work together.
 
 ---
 
@@ -18,7 +20,7 @@ The top-level folder contains the general project instructions and universal con
 | **`CMakeLists.txt`** | Build Architect | The main instruction set for the compiler. |
 | **`STM32F413XX_FLASH.ld`** | Linker Script | Definitively maps software to hardware memory addresses. |
 | **`Template.ioc`** | CubeMX Config | Graphical setup for the microcontroller. |
-| **`README.md`** | Main Documentation | Your guide and plan for Week 1. |
+| **`README.md`** | Main Documentation | The guide and plan for the specific project. |
 | **`PROJECT_STRUCTURE.md`** | Detailed Map | (This file). |
 
 ---

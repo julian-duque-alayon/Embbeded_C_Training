@@ -9,6 +9,7 @@ Embedded systems training laboratory for **STM32** and **ESP32** microcontroller
 ### [STM32](./STM32)
 Projects for the STM32 family, specifically focused on the **NUCLEO-F413ZH** board.
 - **[Template_NucleoF413ZH](./STM32/Template_NucleoF413ZH)**: Base project with CMake and Low-Layer (LL) Drivers.
+- **[Standard Project Structure](./PROJECT_STRUCTURE.md)**: Detailed explanation of the directory and file population for STM32 projects.
 
 ### [ESP32](./ESP32)
 Projects for **ESP32** (Wi-Fi/Bluetooth IoT systems).
