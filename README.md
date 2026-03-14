@@ -1,143 +1,134 @@
 # 🛰️ Mission Control: Embedded C Training
 
-Welcome to the **Embedded C Training Laboratory**. This is where code meets copper, and logic controls electricity. We're focusing on the **STM32** and **ESP32** ecosystems, moving from "Hello World" (blinking LEDs) to professional modular firmware engineering.
-
-> [!IMPORTANT]
-> **Safety First:** No microcontrollers were harmed in the making of this repository. Let's keep it that way! 🧨 (until now)
+Welcome to the **Embedded C Training Laboratory**. This is a comprehensive repository designed for mastering firmware development on **STM32 (ARM Cortex-M)** and **ESP32 (Xtensa/RISC-V)** architectures. We move from foundational "Blinky" projects to professional-grade modular firmware engineering.
 
 ---
 
 ## 🗺️ The Exploration Map
 
-Navigate through the different architectures and templates available:
+This repository is organized by architecture. Each folder contains its own self-contained environment:
 
 | Target | Description | Shortcut |
 | :--- | :--- | :--- |
-| **STM32** | Hardcore ARM Cortex-M4 (NUCLEO-F413ZH). LL Drivers & CMake. | [Go to STM32](./STM32) |
-| **ESP32** | IoT Powerhouse (Wi-Fi/Bluetooth). ESP-IDF & Arduino. | [Go to ESP32](./ESP32) |
-| **Standard** | Learn how we organize things here (Standard Structure). | [Read Structure](./PROJECT_STRUCTURE.md) |
+| **STM32** | ARM Cortex-M4 (Nucleo-F413ZH). Low-Layer (LL) Drivers & CMake. | [Go to STM32](./STM32) |
+| **ESP32** | IoT Powerhouse. ESP-IDF & Arduino framework support. | [Go to ESP32](./ESP32) |
+| **Standard** | Documentation on our professional project structure. | [Read Structure](./PROJECT_STRUCTURE.md) |
 
 ---
 
-## 🚀 Ignition: Linux Environment Setup
+## 🚀 Linux Environment Setup (The Heavy Lifting)
 
-Before we flash any silicon, we need to sharpen our tools. Choose your distribution and run the magic commands:
+To compile and flash code to silicon, you need a specific toolchain. Follow these steps to prepare your system.
 
-### 🛠️ Step 1: Install the Arsenal
+### 📦 1. Core Toolchain Dependencies
 
-<details>
-<summary><b>Arch / Manjaro (The User's Choice) 🐧</b></summary>
+You will need the ARM GCC compiler, flashing tools (ST-Link/OpenOCD), and build systems.
 
+#### **Arch Linux / Manjaro**
 ```bash
 sudo pacman -S --needed \
-    arm-none-eabi-gcc arm-none-eabi-newlib \
-    arm-none-eabi-binutils arm-none-eabi-gdb \
-    cmake ninja openocd stlink
+    base-devel git cmake ninja \
+    arm-none-eabi-gcc arm-none-eabi-newlib arm-none-eabi-binutils \
+    arm-none-eabi-gdb stlink openocd \
+    python python-pip usbutils
 ```
-</details>
 
-<details>
-<summary><b>Ubuntu / Debian 🐧</b></summary>
-
+#### **Ubuntu / Debian / Linux Mint**
 ```bash
 sudo apt update && sudo apt install -y \
-    gcc-arm-none-eabi binutils-arm-none-eabi \
-    libnewlib-arm-none-eabi gdb-multiarch \
-    cmake ninja-build openocd stlink-tools
+    build-essential git cmake ninja-build \
+    gcc-arm-none-eabi libnewlib-arm-none-eabi binutils-arm-none-eabi \
+    gdb-multiarch stlink-tools openocd \
+    python3 python3-pip usbutils
 ```
-</details>
 
-<details>
-<summary><b>Fedora 🐧</b></summary>
-
+#### **Fedora**
 ```bash
 sudo dnf install \
-    arm-none-eabi-gcc-cs arm-none-eabi-binutils-cs \
-    arm-none-eabi-newlib arm-none-eabi-gdb \
-    cmake ninja-build openocd stlink
+    gcc gcc-c++ make git cmake ninja-build \
+    arm-none-eabi-gcc-cs arm-none-eabi-newlib arm-none-eabi-binutils-cs \
+    arm-none-eabi-gdb-cs stlink openocd \
+    python3 python3-pip usbutils
 ```
-</details>
-
-### 🔑 Step 2: Gaining "Superpowers" (Permissions)
-
-To talk to your hardware without being `root`, you need to join the inner circle:
-
-*   **Arch/Manjaro**: `sudo usermod -aG uucp $USER`
-*   **Others**: `sudo usermod -aG dialout,plugdev $USER`
-
-> [!CAUTION]
-> **Logout/Restart!** Your terminal won't know you're famous (part of the group) until you log back in.
-
-### 🔌 Step 3: The Secret Handshake (Is it connected?)
-
-Run these to ensure your Linux kernel is talking to your Nucleo board:
-1.  **USB Peek**: `lsusb` → Look for `STMicroelectronics ST-LINK/V2.1`.
-2.  **Port Scan**: `ls /dev/ttyACM*` → Should see `/dev/ttyACM0`.
-3.  **The Probe**: `st-info --probe` → The ultimate truth. If it returns a Serial ID, you're golden!
 
 ---
 
-## 💻 The Toolbox (VS Code Extensions)
+### 🔑 2. Hardware Permissions (udev Rules)
 
-To make your life 100x easier, install these **Mandatory** extensions:
-1. 🛡️ **C/C++** (`ms-vscode.cpptools`)
-2. 🔨 **CMake Tools** (`ms-vscode.cmake-tools`)
-3. 🐞 **Cortex-Debug** (`marus25.cortex-debug`)
+Linux protects USB devices by default. You need permission to talk to the ST-LINK without using `sudo`.
+
+1.  **Add your user to groups:**
+    *   **Arch/Manjaro**: `sudo usermod -aG uucp $USER`
+    *   **Ubuntu/Others**: `sudo usermod -aG dialout,plugdev $USER`
+2.  **Install udev rules (via stlink package):**
+    The `stlink` package usually handles this, but if your device isn't recognized, you might need to reload:
+    ```bash
+    sudo udevadm control --reload-rules
+    sudo udevadm trigger
+    ```
+
+> [!IMPORTANT]
+> **Reboot or Log out & Log in** after adding yourself to groups for changes to take effect.
 
 ---
 
-## ⚙️ The Flight Manual: Development Workflow
+### 🔌 3. The "Truth Check" (Verifying Hardware)
 
-We use a **Professional Modular Setup**. No messy root folders, just clean projects.
+Once everything is installed, plug in your Nucleo board and run these commands to verify the connection:
 
-### 💡 The Golden Rule: Focus!
+1.  **USB Check**:
+    ```bash
+    lsusb | grep -i "STMicroelectronics"
+    ```
+    *Should show: `ID 0483:374b STMicroelectronics ST-LINK/V2.1`*
+
+2.  **Serial Port Check**:
+    ```bash
+    ls /dev/ttyACM*
+    ```
+    *Should show: `/dev/ttyACM0` (or similar).*
+
+3.  **ST-LINK Tool Check**:
+    ```bash
+    st-info --probe
+    ```
+    *If you get `command not found`, ensure `stlink` (Arch) or `stlink-tools` (Ubuntu) is installed correctly and `/usr/bin` is in your `$PATH`.*
+
+---
+
+## 💻 The Toolbox (VS Code Setup)
+
+For the best experience, install these extensions:
+1.  **C/C++ Extension Pack** (`ms-vscode.cpptools-extension-pack`)
+2.  **CMake Tools** (`ms-vscode.cmake-tools`)
+3.  **Cortex-Debug** (`marus25.cortex-debug`) - *Vital for STM32 debugging.*
+
+---
+
+## ⚙️ Development Workflow
+
+### 💡 The Golden Rule: Use "Folder Context"
 **Do NOT open the root `Embedded_C_Training` folder in VS Code.**
-Instead, open the *specific project* folder (e.g., `STM32/Template_NucleoF413ZH`). This triggers the local config and makes everything "just work".
+Instead, open the specific project folder (e.g., `STM32/Template_NucleoF413ZH`). This ensures the `.vscode` settings for that specific architecture are loaded correctly.
+
+### 🛫 Building & Flashing
+1.  **Configure**: Press `Ctrl + Shift + P` and search for `CMake: Configure`.
+2.  **Select Kit**: Choose `GCC [version] arm-none-eabi`.
+3.  **Build**: Click **Build** in the status bar or press `F7`.
+4.  **Flash & Debug**: Press **F5**. This will automatically compile, upload the code via OpenOCD/ST-LINK, and start the debugger.
 
 ---
 
-### 🛫 Pre-Flight Checklist (The "Big Three")
+## ⚡ ESP32 Specifics
 
-The first time you enter a project, perform these incantations (`Ctrl + Shift + P`):
-1.  **Select Kit**: Choose `GCC for arm-none-eabi`.
-2.  **Select Variant**: Choose `Debug` (unless you like guessing why your code crashed).
-3.  **Configure**: Run `CMake: Configure` to generate the build files.
-
----
-
-### 🚢 Building & Launching
-
-*   **Build**: Click the **Build** button in the status bar or run `cmake --build build`.
-*   **The "Magic" Button (F5)**: Pressing **F5** will **Compile**, **Flash**, and start a **Debug** session automatically. 
-*   **Quick Flash**: Press `Ctrl + Shift + B` -> Select `Flash Nucleo`. Fast and effective.
-
----
-
-## 📟 Terminal Fu (For the Hardcore)
-
-If the IDE is acting up, use the raw power of the terminal:
-
-**A. Manual Build:**
-```bash
-cmake -B build -G Ninja && cmake --build build
-```
-
-**B. Manual Flash (OpenOCD):**
-```bash
-openocd -f interface/stlink.cfg -f target/stm32f4x.cfg -c "program build/Nucleo_F413_Template.elf verify reset exit"
-```
-
----
-
-## ⚡ The ESP32 Realm
-
-ESP32 projects are different beasts. They don't use the ARM tools.
-1. Open the ESP32 folder directly.
-2. Use the **ESP-IDF extension** icons.
-3. Terminal commands: `idf.py build`, `idf.py flash`, `idf.py monitor`.
+ESP32 development uses the **ESP-IDF**.
+1. Open an ESP32 project folder.
+2. The first time, it will prompt you to install the ESP-IDF Toolchain (select "Express Install").
+3. Use the icons in the bottom bar to Build, Flash, and Monitor.
 
 ---
 
 <p align="center">
-  <i>Developed with ❤️ by <a href="https://github.com/julian-duque-alayon">Julian Duque</a></i>
+  <i>Maintained with focus by <a href="https://github.com/julian-duque-alayon">Julian Duque</a></i><br>
+  <b>Happy Hacking! 🚀</b>
 </p>
