@@ -79,17 +79,20 @@ Make sure you have installed these in your VS Code (or WSL environment):
 ### 1. Cortex-Debug (marus25)
 Bridges VS Code with **OpenOCD**. Allows you to press `F5` to compile, flash, and start a debug session, and inspect CPU registers.
 
-### 2. Serial Monitoring (Terminal Directo)
-Si no quieres usar extensiones pesadas para puerto serie, usa el terminal integrado:
+### 2. Serial Monitoring (Integrated Terminal)
+If you don't want to rely on heavy extensions for serial communication, use the integrated terminal:
 
+#### Install `screen` (if you don't have it)
+*   **Arch/Manjaro**: `sudo pacman -S screen`
+*   **Ubuntu/Others**: `sudo apt install screen`
+*   **Fedora**: `sudo dnf install screen`
+
+#### Connect to the port
 ```bash
-# Instala screen si no lo tienes (ej. Arch)
-sudo pacman -S screen
-
-# Conéctate al puerto
+# Adjust the baud rate as needed (e.g., 115200)
 screen /dev/ttyACM0 115200
 ```
-*Para salir de screen: **Ctrl+A** y luego **K**.*
+*To exit screen: Press **Ctrl+A** and then **K**.*
 
 **Pro Tip (SVD):** To view peripheral registers (like `GPIOA`), add the SVD file in `.vscode/launch.json`:
 ```json
