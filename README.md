@@ -2,6 +2,15 @@
 
 Welcome to the **Embedded C Training Laboratory**. This is a comprehensive repository designed for mastering firmware development on **STM32 (ARM Cortex-M)** and **ESP32 (Xtensa/RISC-V)** architectures. We move from foundational "Blinky" projects to professional-grade modular firmware engineering.
 
+> [!TIP]
+> **How to read these READMEs beautifully in your IDE:**
+> 
+> **The native command (No extensions needed)**
+> VS Code (and its forks like Antigravity) already include a basic but functional rendering engine.
+> 
+> - **Shortcut:** `Ctrl + Shift + V` (Opens the preview in a new tab).
+> - **Side-by-side view:** `Ctrl + K` then `V` (Opens the preview next to your code).
+
 ---
 
 ## 🗺️ The Exploration Map
