@@ -129,12 +129,40 @@ You MUST use the **WSL Extension**.
 
 ---
 
-## 💻 The Toolbox (VS Code Setup)
+## 💻 VS Code Setup & Extensions
 
-For the best experience, install these extensions:
-1.  **C/C++ Extension Pack** (`ms-vscode.cpptools-extension-pack`)
-2.  **CMake Tools** (`ms-vscode.cmake-tools`)
-3.  **Cortex-Debug** (`marus25.cortex-debug`) - *Vital for STM32 debugging.*
+To enable full build, flash, and debug capabilities within VS Code, you need to install the following essential extensions:
+
+### 1. C/C++ Extension Pack (Microsoft)
+This is the core engine for C development:
+*   **C/C++**: Provides IntelliSense, code navigation, and syntax highlighting.
+*   **CMake Tools**: **Critical.** It manages the project via your `CMakeLists.txt`. It allows you to select your "kit" (`arm-none-eabi-gcc`) and build with one click in the bottom status bar.
+
+### 2. Cortex-Debug (marus25)
+The most important tool for embedded debugging.
+*   **Debug & Flash**: Bridges VS Code with **OpenOCD** (configured in your `.vscode/launch.json`).
+*   **Live Inspection**: Sets breakpoints and lets you inspect CPU registers and variables in real-time.
+*   **One-Click Workflow**: Pressing `F5` will automatically compile, flash, and start the debug session.
+
+### 3. Serial Monitor (Microsoft)
+*   **UART Console**: Allows you to see `printf` or serial output directly inside a VS Code tab, eliminating the need for external tools like PuTTY or Minicom.
+
+---
+
+### 🔧 Tools vs. Extensions Mapping
+
+| Function | Under-the-hood Tool | VS Code Extension |
+| :--- | :--- | :--- |
+| **Build / Compile** | `arm-none-eabi-gcc` + `cmake` | `CMake Tools` |
+| **Flash** | `openocd` | `Cortex-Debug` |
+| **Debug** | `gdb-multiarch` (or `arm-none-eabi-gdb`) | `Cortex-Debug` |
+| **IntelliSense** | Compiler headers | `C/C++` |
+
+### 💡 Pro Tip: Peripheral Register View (SVD)
+By default, the debugger shows raw memory addresses. To see real register names (like `GPIOA`, `RCC`), you can add an **SVD file** to your `.vscode/launch.json`:
+```json
+"svdFile": "${workspaceFolder}/path/to/STM32F413.svd"
+```
 
 ---
 
