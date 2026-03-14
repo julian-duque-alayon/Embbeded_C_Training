@@ -144,8 +144,23 @@ The most important tool for embedded debugging.
 *   **Live Inspection**: Sets breakpoints and lets you inspect CPU registers and variables in real-time.
 *   **One-Click Workflow**: Pressing `F5` will automatically compile, flash, and start the debug session.
 
-### 3. Serial Monitor (Microsoft)
+### 3. Serial Monitoring
+
+#### 1. Extension: Serial Monitor (Microsoft)
 *   **UART Console**: Allows you to see `printf` or serial output directly inside a VS Code tab, eliminating the need for external tools like PuTTY or Minicom.
+
+#### 2. Uso del Terminal Integrado (Método Directo)
+Si no quieres depender de extensiones que puedan fallar en un fork, usa el terminal de Antigravity directamente. Como ya confirmamos que tu ST-LINK está en /dev/ttyACM0, ejecuta:
+
+```bash
+# Instala screen si no lo tienes
+sudo pacman -S screen
+
+# Conéctate al puerto (ajusta el baudrate, ej: 115200)
+screen /dev/ttyACM0 115200
+```
+
+Para salir de screen: **Ctrl+A** y luego **K**.
 
 ---
 
