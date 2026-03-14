@@ -9,9 +9,17 @@ __IO uint32_t uwTick = 0;
 
 void SystemClock_Config(void);
 
+#ifdef SEMIHOSTING
+extern void initialise_monitor_handles(void);
+#endif
+
 int main(void) {
     // 1. Setup the system clock (Essential)
     SystemClock_Config();
+
+#ifdef SEMIHOSTING
+    initialise_monitor_handles();
+#endif
 
     // 2. Enable GPIO Clock (Nucleo-144 Blue LED is usually PB7)
     LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOB);

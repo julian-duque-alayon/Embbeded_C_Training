@@ -101,9 +101,59 @@ screen /dev/ttyACM0 115200
 
 ---
 
+## ⚙️ The Brain of VS Code: The `.vscode` Folder
+To work without a heavy IDE, we use VS Code's local configuration. Here is what each file in `.vscode` does and why it's there:
+
+| File | Purpose | Why it's crucial |
+| :--- | :--- | :--- |
+| **`launch.json`** | Debug configurations | Defines how **Cortex-Debug** connects to **OpenOCD**. It tells VS Code where the `.elf` file is and which commands to send to the hardware (like enabling Semihosting). |
+| **`tasks.json`** | Custom automation | Contains the "recipes" for common tasks. Here we define the **"Flash device"** task, which runs a terminal command to upload the code without starting a full debug session. |
+| **`settings.json`** | Workspace behavior | Forces VS Code to use **CMake** with specific generators (like **Ninja**) and tells the C++ extension where to find the build information. |
+| **`c_cpp_properties.json`** | IntelliSense (Autocomplete) | Tells the editor where the STM32 headers are (`Drivers/CMSIS/...`) and which compiler is being used. This removes those annoying "Include not found" red squiggles. |
+
+---
+
 ## ⚡ Flashing & Debugging Workflow
-1.  **Build**: (Press `F7` or click Build).
-2.  **Flash & Debug**: Press **F5**. This will upload the code via OpenOCD/ST-LINK and pause at `main()`.
+
+### 🏎️ Option A: Quick Flash (No Debug)
+If you just want to see the code running on the board:
+1.  Press **`Ctrl + Shift + B`**.
+2.  A menu will appear; select **`Run Task`**.
+3.  Choose **`Flash Nucleo`** (or Flash device).
+*The board will reset and start running your code immediately.*
+
+### 🐞 Option B: Full Debug
+If you need to inspect variables or use `printf` (Semihosting):
+1.  Press **`F5`**. 
+2.  The code will upload and pause at the start of `main()`.
+3.  Use the top controls to Play, Step Over, or Reset.
+
+---
+
+## 🎙️ Debugging: The Semihosting Magic
+By default, an STM32 doesn't have a screen or a terminal. When you call `printf()`, the poor microcontroler has no idea where to send that text. To solve this without adding extra hardware (like UART cables), we use **Semihosting**.
+
+### ⚡ What is Semihosting?
+It's a mechanism that lets the STM32 "borrow" the keyboard and screen of your PC. When the code hits a `printf`:
+1. The STM32 pauses for a microsecond.
+2. It sends the data through the **ST-LINK** debugger cable.
+3. **OpenOCD** (on your PC) catches that data and prints it in your VS Code **Debug Console**.
+
+### 🛠️ How it's implemented in our templates:
+To make this work, we perform a "triple surgery" on the project files:
+
+1.  **Linker Alchemy (`cmake/stm32_gcc.cmake`)**: 
+    - We swap `nosys.specs` (which "mutes" system calls) for `rdimon.specs`.
+    - We link `librdimon`, which contains the ARM technical wizardry to talk back to the debugger.
+2.  **The Peacekeeper (`CMakeLists.txt` & `syscalls.c`)**: 
+    - We exclude `syscalls.c` whenever Semihosting is active to avoid "Multiple Definition" errors.
+3.  **The "Wake Up" Call (`main.c`)**:
+    - We call `initialise_monitor_handles()`.
+4.  **The Ear on the PC (`launch.json`)**:
+    - We send `monitor arm semihosting enable` to the debugger.
+
+> [!TIP]
+> **Where are my prints?** They won't appear in the standard Terminal. Look for the **DEBUG CONSOLE** tab next to it while the debugger is running!
 
 ---
 

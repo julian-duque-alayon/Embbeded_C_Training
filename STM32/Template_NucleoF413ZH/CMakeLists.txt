@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.22)
 
 # 1. Toolchain Setup (Must be before project())
+option(USE_SEMIHOSTING "Enable semihosting for debugging" ON)
 set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/cmake/stm32_gcc.cmake)
 
 project(Nucleo_F413_Template C ASM)
@@ -24,6 +25,10 @@ file(GLOB_RECURSE SOURCES
     "Startup/*.s"
     "Drivers/STM32F4xx_HAL_Driver/Src/*_ll_*.c" # Only LL sources
 )
+
+if(USE_SEMIHOSTING)
+    list(REMOVE_ITEM SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/App/src/syscalls.c")
+endif()
 
 # 5. Executable and Linker Script
 add_executable(${PROJECT_NAME}.elf ${SOURCES})
